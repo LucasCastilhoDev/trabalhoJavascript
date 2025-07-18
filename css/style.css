@@ -1,0 +1,31 @@
+body {
+  padding: 2rem;
+  background-color: #f8f9fa;
+}
+
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.badge {
+  font-size: 0.9rem;
+}
+
+::placeholder {
+  color: #6c757d;
+  opacity: 1;
+}
+
+body.bg-dark ::placeholder {
+  color: #adb5bd;
+}
+
+body.bg-dark thead.table-light {
+  background-color: #212529 !important;
+  color: #f8f9fa !important;
+}
+
+body.bg-dark th {
+  background-color: #212529 !important;
+  color: #f8f9fa !important;
+}

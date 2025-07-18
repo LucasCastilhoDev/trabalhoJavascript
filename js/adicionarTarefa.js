@@ -13,7 +13,12 @@ function getBadgeClass(prioridade) {
   }
 }
 
-export function adicionarTarefa(descricao, prioridade, id = Date.now()) {
+export function adicionarTarefa(
+  descricao,
+  prioridade,
+  id = Date.now(),
+  salvar = true
+) {
   const lista = document.getElementById("listaTarefas");
   const novaLinha = document.createElement("tr");
   novaLinha.dataset.id = id;
@@ -27,7 +32,10 @@ export function adicionarTarefa(descricao, prioridade, id = Date.now()) {
   `;
 
   lista.appendChild(novaLinha);
-  salvarTodasTarefas();
+
+  if (salvar) {
+    salvarTodasTarefas();
+  }
 }
 
 export function salvarTodasTarefas() {
@@ -43,12 +51,29 @@ export function salvarTodasTarefas() {
 }
 
 export function carregarTarefas() {
-  const tarefas = TarefasStorage.get();
   const lista = document.getElementById("listaTarefas");
-  lista.innerHTML = ""; // limpa todas as linhas existentes
-  tarefas.forEach((tarefa) => {
-    adicionarTarefa(tarefa.descricao, tarefa.prioridade, tarefa.id);
-  });
+  lista.innerHTML = ""; // Limpa tabela antes de carregar
+
+  const tarefasSalvas = TarefasStorage.get();
+
+  if (!localStorage.getItem("inicializado")) {
+    const tarefasIniciais = [
+      { descricao: "Estudar JavaScript", prioridade: "Alta" },
+      { descricao: "Revisar Bootstrap", prioridade: "Média" },
+      { descricao: "Organizar arquivos do projeto", prioridade: "Baixa" },
+    ];
+
+    tarefasIniciais.forEach((tarefa) => {
+      adicionarTarefa(tarefa.descricao, tarefa.prioridade, Date.now(), false);
+    });
+
+    localStorage.setItem("inicializado", "true");
+    salvarTodasTarefas();
+  } else {
+    tarefasSalvas.forEach((tarefa) => {
+      adicionarTarefa(tarefa.descricao, tarefa.prioridade, tarefa.id, false);
+    });
+  }
 }
 
 export function configurarFormulario() {
@@ -57,6 +82,7 @@ export function configurarFormulario() {
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+
     const descricao = document.getElementById("descricao").value.trim();
     const prioridade = document.getElementById("prioridade").value;
 
